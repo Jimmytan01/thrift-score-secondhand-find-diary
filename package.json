@@ -1,0 +1,6 @@
+{
+  "name": "thrift-score",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test" }
+}
