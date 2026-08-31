@@ -9,12 +9,14 @@ export function fallbackVisual(image) { image.hidden = true; if (image.nextEleme
 
 export function bindEvents({ store, rerender, persist, toast }) {
   const addDialog = $('#add-find-dialog'), deleteDialog = $('#delete-dialog'), form = $('#add-find-form'); let deleting = null;
+  const clearForm = () => { form.reset(); form.querySelectorAll('[data-error]').forEach((node) => { node.textContent = ''; }); };
   document.addEventListener('click', (event) => {
-    const open = event.target.closest('#open-add'); if (open) { form.foundDate.value = new Date().toISOString().slice(0, 10); addDialog.showModal(); }
+    const open = event.target.closest('#open-add'); if (open) addDialog.showModal();
     const close = event.target.closest('[data-close]'); if (close) $("#" + close.dataset.close).close();
     const filter = event.target.closest('[data-filter]'); if (filter) { store.setFilter(filter.dataset.filter); rerender(); }
     const remove = event.target.closest('[data-delete]'); if (remove) { deleting = remove.dataset.delete; deleteDialog.showModal(); }
   });
+  addDialog.addEventListener('close', clearForm);
   document.addEventListener('error', (event) => { if (event.target.matches('.visual img')) fallbackVisual(event.target); }, true);
   form.addEventListener('submit', async (event) => {
     event.preventDefault(); const button = $('#save-find'), original = button.textContent, result = store.add(formToInput(new FormData(form)));
